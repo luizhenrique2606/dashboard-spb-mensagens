@@ -15,13 +15,23 @@ import json
 SPREADSHEET_ID = '17aWoS5Q8x-1I5VY8Sr1re2aA3GhauCLSMZeaklSne18'
 WORKSHEET_GID = 862097115
 
-# Configuração para produção - usa variável de ambiente
+# Configuração para produção - usa variáveis de ambiente
 def get_service_account_info():
     """Obtém as credenciais do Google Sheets"""
-    # Em produção, usa variável de ambiente
-    if 'GOOGLE_CREDENTIALS' in os.environ:
-        credentials_json = os.environ['GOOGLE_CREDENTIALS']
-        return json.loads(credentials_json)
+    # Em produção, usa variáveis de ambiente separadas
+    if 'GOOGLE_PROJECT_ID' in os.environ:
+        return {
+            "type": "service_account",
+            "project_id": os.environ['GOOGLE_PROJECT_ID'],
+            "private_key_id": os.environ['GOOGLE_PRIVATE_KEY_ID'],
+            "private_key": os.environ['GOOGLE_PRIVATE_KEY'].replace('\\n', '\n'),
+            "client_email": os.environ['GOOGLE_CLIENT_EMAIL'],
+            "client_id": os.environ['GOOGLE_CLIENT_ID'],
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": f"https://www.googleapis.com/robot/v1/metadata/x509/{os.environ['GOOGLE_CLIENT_EMAIL'].replace('@', '%40')}"
+        }
     # Desenvolvimento local
     else:
         import getpass
