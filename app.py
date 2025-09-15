@@ -19,17 +19,17 @@ WORKSHEET_GID = 862097115
 # Configuração para produção - usa variável de ambiente
 def get_service_account_info():
     """Obtém as credenciais do Google Sheets"""
-    # Em produção, usa variável de ambiente
-    if 'GOOGLE_CREDENTIALS' in os.environ:
-        credentials_json = os.environ['GOOGLE_CREDENTIALS']
+    # Em produção, usa variável de ambiente Base64
+    if 'GOOGLE_CREDENTIALS_BASE64' in os.environ:
+        import base64
+        credentials_base64 = os.environ['GOOGLE_CREDENTIALS_BASE64']
+        credentials_json = base64.b64decode(credentials_base64).decode('utf-8')
         return json.loads(credentials_json)
-    
-    # Em desenvolvimento local, usa arquivo
-    import getpass
-    usuario = getpass.getuser()
-    SA_PATH = f'/Users/{usuario}/Documents/Python/google_service_account_key.json'
-    
-    if os.path.exists(SA_PATH):
+    # Desenvolvimento local
+    else:
+        import getpass
+        usuario = getpass.getuser()
+        SA_PATH = f'/Users/{usuario}/Documents/Python/google_service_account_key.json'
         with open(SA_PATH, 'r') as f:
             return json.load(f)
     
