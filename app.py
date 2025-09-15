@@ -10,7 +10,6 @@ import gspread
 from flask import Flask, render_template, jsonify
 from datetime import datetime, timedelta
 import json
-import base64
 
 # Configurações
 SPREADSHEET_ID = '17aWoS5Q8x-1I5VY8Sr1re2aA3GhauCLSMZeaklSne18'
@@ -19,11 +18,9 @@ WORKSHEET_GID = 862097115
 # Configuração para produção - usa variável de ambiente
 def get_service_account_info():
     """Obtém as credenciais do Google Sheets"""
-    # Em produção, usa variável de ambiente Base64
-    if 'GOOGLE_CREDENTIALS_BASE64' in os.environ:
-        import base64
-        credentials_base64 = os.environ['GOOGLE_CREDENTIALS_BASE64']
-        credentials_json = base64.b64decode(credentials_base64).decode('utf-8')
+    # Em produção, usa variável de ambiente
+    if 'GOOGLE_CREDENTIALS' in os.environ:
+        credentials_json = os.environ['GOOGLE_CREDENTIALS']
         return json.loads(credentials_json)
     # Desenvolvimento local
     else:
@@ -32,8 +29,6 @@ def get_service_account_info():
         SA_PATH = f'/Users/{usuario}/Documents/Python/google_service_account_key.json'
         with open(SA_PATH, 'r') as f:
             return json.load(f)
-    
-    raise FileNotFoundError("Credenciais do Google Sheets não encontradas")
 
 app = Flask(__name__)
 
