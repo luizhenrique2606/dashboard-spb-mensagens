@@ -18,8 +18,14 @@ WORKSHEET_GID = 862097115
 # Configuração para produção - usa variáveis de ambiente
 def get_service_account_info():
     """Obtém as credenciais do Google Sheets"""
+    # Debug - verificar variáveis
+    print(f"🔍 Verificando variáveis de ambiente:")
+    print(f"GOOGLE_PROJECT_ID existe: {'GOOGLE_PROJECT_ID' in os.environ}")
+    print(f"GOOGLE_CLIENT_EMAIL existe: {'GOOGLE_CLIENT_EMAIL' in os.environ}")
+    
     # Em produção, usa variáveis de ambiente separadas
     if 'GOOGLE_PROJECT_ID' in os.environ:
+        print("✅ Usando variáveis de ambiente")
         return {
             "type": "service_account",
             "project_id": os.environ['GOOGLE_PROJECT_ID'],
@@ -34,6 +40,7 @@ def get_service_account_info():
         }
     # Desenvolvimento local
     else:
+        print("❌ Variáveis não encontradas, tentando arquivo local")
         import getpass
         usuario = getpass.getuser()
         SA_PATH = f'/Users/{usuario}/Documents/Python/google_service_account_key.json'
